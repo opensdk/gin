@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-var LowerFirstChar = true
+var JSONLowerFirstChar = true
 
 type (
 	JSON struct {
@@ -36,7 +36,7 @@ func (r JSON) Render(w http.ResponseWriter) error {
 
 func (r IndentedJSON) Render(w http.ResponseWriter) error {
 	writeContentType(w, jsonContentType)
-	jsonBytes, err := jsonutils.MarshalIndent(r.Data, "", "    ", LowerFirstChar)
+	jsonBytes, err := jsonutils.MarshalIndent(r.Data, "", "    ", JSONLowerFirstChar)
 	if err != nil {
 		return err
 	}
@@ -46,5 +46,5 @@ func (r IndentedJSON) Render(w http.ResponseWriter) error {
 
 func WriteJSON(w http.ResponseWriter, obj interface{}) error {
 	writeContentType(w, jsonContentType)
-	return jsonutils.NewEncoder(w).Encode(obj, LowerFirstChar)
+	return jsonutils.NewEncoder(w).Encode(obj, JSONLowerFirstChar)
 }

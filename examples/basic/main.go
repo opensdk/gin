@@ -8,6 +8,7 @@ import (
 var DB = make(map[string]string)
 
 func main() {
+	gin.JSONLowerFirstChar(true)
 	r := gin.Default()
 
 	// Ping test

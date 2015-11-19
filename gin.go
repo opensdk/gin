@@ -83,6 +83,11 @@ type (
 
 var _ IRouter = &Engine{}
 
+// render json result lower first char
+func JSONLowerFirstChar(enable bool)  {
+	render.JSONLowerFirstChar = enable
+}
+
 // New returns a new blank Engine instance without any middleware attached.
 // By default the configuration is:
 // - RedirectTrailingSlash:  true
