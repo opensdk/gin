@@ -12,9 +12,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/flosch/pongo2"
+	"github.com/manucorporat/sse"
 	"github.com/opensdk/gin/binding"
 	"github.com/opensdk/gin/render"
-	"github.com/manucorporat/sse"
 	"golang.org/x/net/context"
 )
 
@@ -336,8 +337,8 @@ func (c *Context) renderError(err error) {
 // HTML renders the HTTP template specified by its file name.
 // It also updates the HTTP code and sets the Content-Type as "text/html".
 // See http://golang.org/doc/articles/wiki/
-func (c *Context) HTML(code int, name string, obj interface{}) {
-	instance := c.engine.HTMLRender.Instance(name, obj)
+func (c *Context) HTML(code int, name string, data pongo2.Context) {
+	instance := c.engine.HTMLRender.Instance(name, data)
 	c.Render(code, instance)
 }
 
@@ -351,9 +352,9 @@ func (c *Context) IndentedJSON(code int, obj interface{}) {
 
 // JSON serializes the given struct as JSON into the response body.
 // It also sets the Content-Type as "application/json".
-func (c *Context) JSON(code int, obj interface{}) {
+func (c *Context) JSON(code int, result render.JSONResult) {
 	c.writermem.WriteHeader(code)
-	if err := render.WriteJSON(c.Writer, obj); err != nil {
+	if err := render.WriteJSON(c.Writer, result); err != nil {
 		c.renderError(err)
 	}
 }

@@ -12,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/opensdk/gin/render"
+	"github.com/robvdl/pongo2gin"
 )
 
 // Framework's version
@@ -107,6 +108,35 @@ func New() *Engine {
 	engine.pool.New = func() interface{} {
 		return engine.allocateContext()
 	}
+	return engine
+}
+
+// New returns a new blank Engine instance without any middleware attached.
+// By default the configuration is:
+// - RedirectTrailingSlash:  true
+// - RedirectFixedPath:      false
+// - HandleMethodNotAllowed: false
+// - ForwardedByClientIP:    true
+func NewUsedPongo() *Engine {
+	debugPrintWARNINGNew()
+	engine := &Engine{
+		RouterGroup: RouterGroup{
+			Handlers: nil,
+			basePath: "/",
+			root:     true,
+		},
+		RedirectTrailingSlash:  true,
+		RedirectFixedPath:      false,
+		HandleMethodNotAllowed: false,
+		ForwardedByClientIP:    true,
+		trees:                  make(methodTrees, 0, 9),
+	}
+	engine.RouterGroup.engine = engine
+	engine.pool.New = func() interface{} {
+		return engine.allocateContext()
+	}
+
+	engine.HTMLRender = pongo2gin.Default()
 	return engine
 }
 

@@ -8,8 +8,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/opensdk/gin/binding"
 	"github.com/mattn/go-colorable"
+	"github.com/opensdk/gin/binding"
 )
 
 const ENV_GIN_MODE = "GIN_MODE"

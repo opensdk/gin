@@ -19,6 +19,13 @@ type (
 	IndentedJSON struct {
 		Data interface{}
 	}
+
+	JSONResult struct {
+		Success bool
+		Msg     string
+		Data    interface{}
+		Code    int
+	}
 )
 
 var jsonContentType = []string{"application/json; charset=utf-8"}
@@ -29,7 +36,7 @@ func (r JSON) Render(w http.ResponseWriter) error {
 
 func (r IndentedJSON) Render(w http.ResponseWriter) error {
 	writeContentType(w, jsonContentType)
-	jsonBytes, err := jsonutils.MarshalIndent(r.Data, "", "    ", lowerFirstChar)
+	jsonBytes, err := jsonutils.MarshalIndent(r.Data, "", "    ", LowerFirstChar)
 	if err != nil {
 		return err
 	}
