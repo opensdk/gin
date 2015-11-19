@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/gin-gonic/gin"
+	"github.com/opensdk/gin"
 )
 
 func main() {

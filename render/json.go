@@ -5,9 +5,11 @@
 package render
 
 import (
-	"encoding/json"
+	"github.com/opentoolkit/gotools/json"
 	"net/http"
 )
+
+var LowerFirstChar = true
 
 type (
 	JSON struct {
@@ -27,7 +29,7 @@ func (r JSON) Render(w http.ResponseWriter) error {
 
 func (r IndentedJSON) Render(w http.ResponseWriter) error {
 	writeContentType(w, jsonContentType)
-	jsonBytes, err := json.MarshalIndent(r.Data, "", "    ")
+	jsonBytes, err := jsonutils.MarshalIndent(r.Data, "", "    ", lowerFirstChar)
 	if err != nil {
 		return err
 	}
@@ -37,5 +39,5 @@ func (r IndentedJSON) Render(w http.ResponseWriter) error {
 
 func WriteJSON(w http.ResponseWriter, obj interface{}) error {
 	writeContentType(w, jsonContentType)
-	return json.NewEncoder(w).Encode(obj)
+	return jsonutils.NewEncoder(w).Encode(obj)
 }

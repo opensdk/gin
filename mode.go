@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/gin-gonic/gin/binding"
+	"github.com/opensdk/gin/binding"
 	"github.com/mattn/go-colorable"
 )
 
