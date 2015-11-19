@@ -15,6 +15,10 @@ func main() {
 		c.String(200, "pong")
 	})
 
+	r.GET("/json/:value", func(c *gin.Context) {
+		c.JSONSuccess(c.Params.ByName("value"))
+	})
+
 	// Get user value
 	r.GET("/user/:name", func(c *gin.Context) {
 		user := c.Params.ByName("name")

@@ -6,26 +6,26 @@ package gin
 
 import (
 	"errors"
+	"github.com/flosch/pongo2"
+	"github.com/manucorporat/sse"
+	"github.com/opensdk/gin/binding"
+	"github.com/opensdk/gin/render"
+	"golang.org/x/net/context"
 	"io"
 	"math"
 	"net/http"
 	"strings"
 	"time"
-	"github.com/flosch/pongo2"
-	"github.com/manucorporat/sse"
-	"github.com/opensdk/gin/binding"
-	"golang.org/x/net/context"
-	"github.com/opensdk/gin/render"
 )
 
 // Content-Type MIME of the most common data formats
 const (
-	MIMEJSON = binding.MIMEJSON
-	MIMEHTML = binding.MIMEHTML
-	MIMEXML = binding.MIMEXML
-	MIMEXML2 = binding.MIMEXML2
-	MIMEPlain = binding.MIMEPlain
-	MIMEPOSTForm = binding.MIMEPOSTForm
+	MIMEJSON              = binding.MIMEJSON
+	MIMEHTML              = binding.MIMEHTML
+	MIMEXML               = binding.MIMEXML
+	MIMEXML2              = binding.MIMEXML2
+	MIMEPlain             = binding.MIMEPlain
+	MIMEPOSTForm          = binding.MIMEPOSTForm
 	MIMEMultipartPOSTForm = binding.MIMEMultipartPOSTForm
 )
 
@@ -38,14 +38,14 @@ type Context struct {
 	Request   *http.Request
 	Writer    ResponseWriter
 
-	Params    Params
-	handlers  HandlersChain
-	index     int8
+	Params   Params
+	handlers HandlersChain
+	index    int8
 
-	engine    *Engine
-	Keys      map[string]interface{}
-	Errors    errorMsgs
-	Accepted  []string
+	engine   *Engine
+	Keys     map[string]interface{}
+	Errors   errorMsgs
+	Accepted []string
 }
 
 var _ context.Context = &Context{}
@@ -358,6 +358,44 @@ func (c *Context) JSON(code int, obj interface{}) {
 	}
 }
 
+// JSON serializes the given struct as JSON into the response body.
+// It also sets the Content-Type as "application/json".
+// result is JSONResult
+func (c *Context) JSONResult(result render.JSONResult) {
+	c.writermem.WriteHeader(http.StatusOK)
+	if err := render.WriteJSON(c.Writer, result); err != nil {
+		c.renderError(err)
+	}
+}
+
+// JSON serializes the given struct as JSON into the response body.
+// It also sets the Content-Type as "application/json".
+// result is JSONResult, and result success is true
+func (c *Context) JSONSuccess(obj interface{}, msgs ...string) {
+	result := render.JSONResult{Success: true, Data: obj}
+	for _, v := range msgs {
+		result.Msg += v
+	}
+	c.writermem.WriteHeader(http.StatusOK)
+	if err := render.WriteJSON(c.Writer, result); err != nil {
+		c.renderError(err)
+	}
+}
+
+// JSON serializes the given struct as JSON into the response body.
+// It also sets the Content-Type as "application/json".
+// result is JSONResult, and result success is false
+func (c *Context) JSONFailed(obj interface{}, msgs ...string) {
+	result := render.JSONResult{Success: true, Data: obj}
+	for _, v := range msgs {
+		result.Msg += v
+	}
+	c.writermem.WriteHeader(http.StatusOK)
+	if err := render.WriteJSON(c.Writer, result); err != nil {
+		c.renderError(err)
+	}
+}
+
 // XML serializes the given struct as XML into the response body.
 // It also sets the Content-Type as "application/xml".
 func (c *Context) XML(code int, obj interface{}) {
@@ -438,7 +476,7 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 
 	case binding.MIMEHTML:
 		data := chooseData(config.HTMLData, config.Data)
-		c.HTML(code, config.HTMLName, pongo2.Context{"value":data})
+		c.HTML(code, config.HTMLName, pongo2.Context{"value": data})
 
 	case binding.MIMEXML:
 		data := chooseData(config.XMLData, config.Data)

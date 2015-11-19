@@ -4,10 +4,10 @@
 package gin
 
 import (
-	"net/http"
-	"path"
 	"github.com/flosch/pongo2"
 	"github.com/opensdk/gin/render"
+	"net/http"
+	"path"
 )
 
 // RenderOptions is used to configure the renderer.
@@ -15,8 +15,6 @@ type Pongo2RenderOptions struct {
 	TemplateDir string
 	ContentType string
 }
-
-
 
 // Pongo2Render is a custom Gin template renderer using Pongo2.
 type Pongo2Render struct {
