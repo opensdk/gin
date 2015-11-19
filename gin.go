@@ -12,7 +12,6 @@ import (
 	"sync"
 
 	"github.com/opensdk/gin/render"
-	"github.com/robvdl/pongo2gin"
 )
 
 // Framework's version
@@ -136,7 +135,7 @@ func NewUsedPongo() *Engine {
 		return engine.allocateContext()
 	}
 
-	engine.HTMLRender = pongo2gin.Default()
+	engine.HTMLRender = DefaultPongo2Render()
 	return engine
 }
 

@@ -46,5 +46,5 @@ func (r IndentedJSON) Render(w http.ResponseWriter) error {
 
 func WriteJSON(w http.ResponseWriter, obj interface{}) error {
 	writeContentType(w, jsonContentType)
-	return jsonutils.NewEncoder(w).Encode(obj)
+	return jsonutils.NewEncoder(w).Encode(obj, LowerFirstChar)
 }

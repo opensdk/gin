@@ -11,22 +11,21 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
 	"github.com/flosch/pongo2"
 	"github.com/manucorporat/sse"
 	"github.com/opensdk/gin/binding"
-	"github.com/opensdk/gin/render"
 	"golang.org/x/net/context"
+	"github.com/opensdk/gin/render"
 )
 
 // Content-Type MIME of the most common data formats
 const (
-	MIMEJSON              = binding.MIMEJSON
-	MIMEHTML              = binding.MIMEHTML
-	MIMEXML               = binding.MIMEXML
-	MIMEXML2              = binding.MIMEXML2
-	MIMEPlain             = binding.MIMEPlain
-	MIMEPOSTForm          = binding.MIMEPOSTForm
+	MIMEJSON = binding.MIMEJSON
+	MIMEHTML = binding.MIMEHTML
+	MIMEXML = binding.MIMEXML
+	MIMEXML2 = binding.MIMEXML2
+	MIMEPlain = binding.MIMEPlain
+	MIMEPOSTForm = binding.MIMEPOSTForm
 	MIMEMultipartPOSTForm = binding.MIMEMultipartPOSTForm
 )
 
@@ -39,14 +38,14 @@ type Context struct {
 	Request   *http.Request
 	Writer    ResponseWriter
 
-	Params   Params
-	handlers HandlersChain
-	index    int8
+	Params    Params
+	handlers  HandlersChain
+	index     int8
 
-	engine   *Engine
-	Keys     map[string]interface{}
-	Errors   errorMsgs
-	Accepted []string
+	engine    *Engine
+	Keys      map[string]interface{}
+	Errors    errorMsgs
+	Accepted  []string
 }
 
 var _ context.Context = &Context{}
@@ -352,9 +351,9 @@ func (c *Context) IndentedJSON(code int, obj interface{}) {
 
 // JSON serializes the given struct as JSON into the response body.
 // It also sets the Content-Type as "application/json".
-func (c *Context) JSON(code int, result render.JSONResult) {
+func (c *Context) JSON(code int, obj interface{}) {
 	c.writermem.WriteHeader(code)
-	if err := render.WriteJSON(c.Writer, result); err != nil {
+	if err := render.WriteJSON(c.Writer, obj); err != nil {
 		c.renderError(err)
 	}
 }
@@ -439,7 +438,7 @@ func (c *Context) Negotiate(code int, config Negotiate) {
 
 	case binding.MIMEHTML:
 		data := chooseData(config.HTMLData, config.Data)
-		c.HTML(code, config.HTMLName, data)
+		c.HTML(code, config.HTMLName, pongo2.Context{"value":data})
 
 	case binding.MIMEXML:
 		data := chooseData(config.XMLData, config.Data)

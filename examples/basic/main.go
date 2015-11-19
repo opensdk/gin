@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/opensdk/gin"
+	"github.com/opensdk/gin/render"
 )
 
 var DB = make(map[string]string)
@@ -19,7 +20,7 @@ func main() {
 		user := c.Params.ByName("name")
 		value, ok := DB[user]
 		if ok {
-			c.JSON(200, gin.H{"user": user, "value": value})
+			c.JSON(200, render.JSONResult{Success: true, Data: gin.H{"user": user, "value": value}})
 		} else {
 			c.JSON(200, gin.H{"user": user, "status": "no value"})
 		}
